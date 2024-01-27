@@ -98,9 +98,9 @@ where
         let assignment_event_stream = self.assignment_events();
 
         // Deploy named subgraphs found in store
-        println!("Registrar: before startassignedsubgraphs");
+        println!("###Registrar: before startassignedsubgraphs");
         self.start_assigned_subgraphs().and_then(move |()| {
-            println!("Registrar: then startassignedsubgraphs");
+            println!("###Registrar: then startassignedsubgraphs");
             // Spawn a task to handle assignment events.
             // Blocking due to store interactions. Won't be blocking after #905.
             graph::spawn_blocking(
@@ -113,7 +113,7 @@ where
                     })
                     .compat()
                     .for_each(move |assignment_event| {
-                        println!("Registrar: before handle assignment event");
+                        println!("###Registrar: before handle assignment event");
                         assert_eq!(assignment_event.node_id(), &node_id);
                         handle_assignment_event(
                             assignment_event,
@@ -229,6 +229,11 @@ where
         let logger = self.logger.clone();
         let node_id = self.node_id.clone();
 
+        info!(
+            logger,
+            "###Enter start_assigned_subgraphs";
+            "node_id" => &node_id
+        );
         future::result(self.store.active_assignments(&self.node_id))
             .map_err(|e| anyhow!("Error querying subgraph assignments: {}", e))
             .and_then(move |deployments| {
@@ -238,18 +243,29 @@ where
                 // the receiver terminates without receiving anything.
                 let deployments = HashSet::<DeploymentLocator>::from_iter(deployments);
                 let deployments_len = deployments.len();
+                info!(
+                    logger,
+                    "###future::result";
+                    "deployments len" => deployments_len
+                );
+
                 let (sender, receiver) = futures01::sync::mpsc::channel::<()>(1);
                 for id in deployments {
                     let sender = sender.clone();
-                    let logger = logger.clone();
+                    let logger: Logger = logger.clone();
 
+                    info!(
+                        logger,
+                        "####Deployment: ";
+                        "deployment id" => id.hash.to_string()
+                    );
                     graph::spawn(
                         start_subgraph(id, provider.clone(), logger).map(move |()| drop(sender)),
                     );
                 }
                 drop(sender);
                 receiver.collect().then(move |_| {
-                    info!(logger, "Started all assigned subgraphs";
+                    info!(logger, "###Started all assigned subgraphs";
                                   "count" => deployments_len, "node_id" => &node_id);
                     future::ok(())
                 })
