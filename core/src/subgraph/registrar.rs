@@ -98,8 +98,9 @@ where
         let assignment_event_stream = self.assignment_events();
 
         // Deploy named subgraphs found in store
+        println!("Registrar: before startassignedsubgraphs");
         self.start_assigned_subgraphs().and_then(move |()| {
-            println!("Registrar: assigned subgraphs");
+            println!("Registrar: then startassignedsubgraphs");
             // Spawn a task to handle assignment events.
             // Blocking due to store interactions. Won't be blocking after #905.
             graph::spawn_blocking(
