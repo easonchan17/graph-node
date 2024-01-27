@@ -99,6 +99,7 @@ where
 
         // Deploy named subgraphs found in store
         self.start_assigned_subgraphs().and_then(move |()| {
+            println!("Registrar: assigned subgraphs");
             // Spawn a task to handle assignment events.
             // Blocking due to store interactions. Won't be blocking after #905.
             graph::spawn_blocking(
@@ -111,6 +112,7 @@ where
                     })
                     .compat()
                     .for_each(move |assignment_event| {
+                        println!("Registrar: before handle assignment event");
                         assert_eq!(assignment_event.node_id(), &node_id);
                         handle_assignment_event(
                             assignment_event,
