@@ -196,6 +196,8 @@ impl<S: SubgraphStore> SubgraphInstanceManager<S> {
         C: Blockchain,
         <C as Blockchain>::MappingTrigger: ToAscPtr,
     {
+        info!(logger, "Build subgraph runner");
+
         let subgraph_store = self.subgraph_store.cheap_clone();
         let registry = self.metrics_registry.cheap_clone();
 

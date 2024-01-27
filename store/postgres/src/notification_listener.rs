@@ -2,6 +2,7 @@ use diesel::pg::PgConnection;
 use diesel::select;
 use diesel::sql_types::Text;
 use graph::prelude::tokio::sync::mpsc::error::SendTimeoutError;
+use graph::prelude::tonic::transport::channel;
 use graph::util::backoff::ExponentialBackoff;
 use lazy_static::lazy_static;
 use openssl::ssl::{SslConnector, SslMethod, SslVerifyMode};
@@ -429,6 +430,7 @@ impl NotificationSender {
         let msg = data.to_string();
 
         if msg.len() <= LARGE_NOTIFICATION_THRESHOLD {
+            println!("Notification Listener: pg notify1 {} {}", channel, msg);
             select(pg_notify(channel, &msg)).execute(conn)?;
         } else {
             // Write the notification payload to the large_notifications table
@@ -438,6 +440,8 @@ impl NotificationSender {
                 .get_result(conn)?;
 
             // Use the large_notifications row ID as the payload for NOTIFY
+
+            println!("Notification Listener: pg notify2 {} {}", channel, &payload_id.to_string());
             select(pg_notify(channel, &payload_id.to_string())).execute(conn)?;
 
             // Prune old large_notifications. We want to keep the size of the

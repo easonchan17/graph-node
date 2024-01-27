@@ -1408,6 +1408,7 @@ impl<'a> Connection<'a> {
                 EVENT_TAP.lock().unwrap().push(event.clone());
             }
         }
+        println!("Primary: notify channel store_events");
         sender.notify(&self.conn, "store_events", None, &v)
     }
 

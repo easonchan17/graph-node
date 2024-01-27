@@ -514,6 +514,7 @@ impl SubgraphStoreInner {
         #[cfg(not(debug_assertions))]
         assert!(!replace);
 
+        println!("Instance Manager: create deployment internal");
         self.evict(schema.id())?;
         let graft_base = deployment.graft_base.as_ref();
 
@@ -584,6 +585,8 @@ impl SubgraphStoreInner {
                 pconn.create_subgraph_version(name, &site, node_id, mode, exists_and_synced)?;
 
             let event = StoreEvent::new(changes);
+
+            println!("Instance Manager: send store event");
             pconn.send_store_event(&self.sender, &event)?;
             Ok(())
         })?;

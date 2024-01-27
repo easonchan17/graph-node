@@ -616,12 +616,12 @@ impl Request {
                 let res = store
                     .transact_block_operations(batch.deref(), stopwatch)
                     .map(|()| ExecResult::Continue);
-                info!(store.logger, "Committed write batch";
-                        "block_number" => batch.block_ptr.number,
-                        "block_count" => batch.block_ptr.number - batch.first_block + 1,
-                        "entities" => batch.entity_count(),
-                        "weight" => batch.weight(),
-                        "time_ms" => start.elapsed().as_millis());
+                // info!(store.logger, "Committed write batch";
+                //         "block_number" => batch.block_ptr.number,
+                //         "block_count" => batch.block_ptr.number - batch.first_block + 1,
+                //         "entities" => batch.entity_count(),
+                //         "weight" => batch.weight(),
+                //         "time_ms" => start.elapsed().as_millis());
                 res
             }
             Request::RevertTo {
