@@ -432,6 +432,7 @@ impl NotificationSender {
         if msg.len() <= LARGE_NOTIFICATION_THRESHOLD {
             println!("Notification Listener: pg notify1 {} {}", channel, msg);
             select(pg_notify(channel, &msg)).execute(conn)?;
+            println!("Notification Listener: pg notify1 sended");
         } else {
             // Write the notification payload to the large_notifications table
             let payload_id: i32 = diesel::insert_into(large_notifications)

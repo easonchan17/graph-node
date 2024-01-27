@@ -42,6 +42,7 @@ impl<S: SubgraphStore> SubgraphInstanceManagerTrait for SubgraphInstanceManager<
         manifest: serde_yaml::Mapping,
         stop_block: Option<BlockNumber>,
     ) {
+        println!("Instance Manager: start subgraph");
         let logger = self.logger_factory.subgraph_logger(&loc);
         let err_logger = logger.clone();
         let instance_manager = self.cheap_clone();
@@ -63,6 +64,7 @@ impl<S: SubgraphStore> SubgraphInstanceManagerTrait for SubgraphInstanceManager<
                     self.start_subgraph_inner(logger, loc, runner).await
                 }
                 BlockchainKind::Ethereum => {
+                    println!("Instance Manager: before build subgraph runner");
                     let runner = instance_manager
                         .build_subgraph_runner::<graph_chain_ethereum::Chain>(
                             logger.clone(),
@@ -473,6 +475,7 @@ impl<S: SubgraphStore> SubgraphInstanceManager<S> {
     where
         <C as Blockchain>::MappingTrigger: ToAscPtr,
     {
+        println!("Instance Manager: start subgraph inner");
         let registry = self.metrics_registry.cheap_clone();
         let subgraph_metrics_unregister = runner.metrics.subgraph.cheap_clone();
 

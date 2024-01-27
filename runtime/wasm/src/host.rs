@@ -205,14 +205,14 @@ where
 
         // If there is an error, "gas_used" is incorrectly reported as 0.
         let gas_used = result.as_ref().map(|(_, gas)| gas).unwrap_or(&Gas::ZERO);
-        info!(
-            logger, "Done processing trigger";
-            &extras,
-            "total_ms" => elapsed.as_millis(),
-            "handler" => handler,
-            "data_source" => &self.data_source.name(),
-            "gas_used" => gas_used.to_string(),
-        );
+        // info!(
+        //     logger, "Done processing trigger";
+        //     &extras,
+        //     "total_ms" => elapsed.as_millis(),
+        //     "handler" => handler,
+        //     "data_source" => &self.data_source.name(),
+        //     "gas_used" => gas_used.to_string(),
+        // );
 
         // Discard the gas value
         result.map(|(block_state, _)| block_state)

@@ -447,7 +447,7 @@ where
         self.state.entity_lfu_cache = cache;
 
         if !mods.is_empty() {
-            info!(&logger, "Applying {} entity operation(s)", mods.len());
+            // info!(&logger, "Applying {} entity operation(s)", mods.len());
         }
 
         let err_count = block_state.deterministic_errors.len();
