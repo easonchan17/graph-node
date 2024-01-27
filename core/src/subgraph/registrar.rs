@@ -449,7 +449,7 @@ async fn handle_assignment_event(
 ) -> Result<(), CancelableError<SubgraphAssignmentProviderError>> {
     let logger = logger.clone();
 
-    debug!(logger, "Received assignment event: {:?}", event);
+    info!(logger, "Received assignment event: {:?}", event);
 
     match event {
         AssignmentEvent::Add {
