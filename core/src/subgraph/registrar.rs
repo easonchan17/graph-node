@@ -456,6 +456,7 @@ async fn handle_assignment_event(
             deployment,
             node_id: _,
         } => {
+            println!("Registrar: handle assignment event Add");
             start_subgraph(deployment, provider.clone(), logger).await;
             Ok(())
         }
@@ -477,12 +478,12 @@ async fn start_subgraph(
     let logger = logger
         .new(o!("subgraph_id" => deployment.hash.to_string(), "sgd" => deployment.id.to_string()));
 
-    trace!(logger, "Start subgraph");
+    info!(logger, "Start subgraph");
 
     let start_time = Instant::now();
     let result = provider.start(deployment.clone(), None).await;
 
-    debug!(
+    info!(
         logger,
         "Subgraph started";
         "start_ms" => start_time.elapsed().as_millis()

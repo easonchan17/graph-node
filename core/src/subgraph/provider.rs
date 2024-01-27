@@ -84,6 +84,11 @@ impl<I: SubgraphInstanceManager> SubgraphAssignmentProviderTrait for SubgraphAss
             return Err(SubgraphAssignmentProviderError::AlreadyRunning(
                 loc.hash.clone(),
             ));
+        } else {
+            info!(
+                logger,
+                "Provider start: Subgraph deployment inserted"
+            );
         }
 
         let file_bytes = self
